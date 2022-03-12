@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=UA-142997649-1"></script> -->
+    <!-- <script> -->
+    <!--   window.dataLayer = window.dataLayer || []; -->
+    <!--   function gtag(){dataLayer.push(arguments);} -->
+    <!--   gtag('js', new Date()); -->
+
+    <!--   gtag('config', 'UA-142997649-1'); -->
+    <!-- </script> -->
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>タッチde書き順</title>
+    <meta name="description" content="タッチで書き順(筆順)テストができるゲームです。">
+    <!-- <script> -->
+    <!--   if ('serviceWorker' in navigator) { -->
+    <!--     window.addEventListener('load', function() { -->
+    <!--       navigator.serviceWorker.register('/touch-de-kakijun/sw.js'); -->
+    <!--     }); -->
+    <!--   } -->
+    <!-- </script> -->
+    <link rel="icon" type="image/png" href="/touch-de-kakijun/favicon/favicon.png">
+    <link rel="icon" type="image/svg+xml" href="/touch-de-kakijun/favicon/favicon.svg">
+    <link rel="apple-touch-icon" sizes="180x180" href="/touch-de-kakijun/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="/touch-de-kakijun/favicon/site.webmanifest">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+      html { touch-action:manipulation; }
+      #counter {
+        font-size:10rem; width:12rem; height:12rem; line-height:12rem; border-radius: 50%;
+        background:tomato; margin:auto; }
+      html[data-theme="dark"] { filter: invert(1) hue-rotate(180deg); }
+      @-moz-document url-prefix() { html[data-theme="dark"] { background-color:black; } }
+    </style>
+  </head>
+  <body>
+    <header id="header" class="sticky-top bg-white">
+      <nav class="navbar navbar-expand navbar-light">
+        <div class="container flex-wrap">
+          <a class="navbar-brand" href="/touch-de-kakijun/">
+            <img src="/touch-de-kakijun/favicon/original.svg" width="32" height="32">
+            タッチde<ruby>書<rp>(</rp><rt>か</rt><rp>)</rp></ruby>き<ruby>順<rp>(</rp><rt>じゅん</rt><rp>)</rp></ruby>
+          </a>
+          <div class="navbar-nav">
+            <select id="gradeOption" class="form-select form-select-sm" aria-label="学年">
+              <option>小1</option>
+              <option>小2</option>
+              <option>小3</option>
+              <option selected>小4</option>
+              <option>小5</option>
+              <option>小6</option>
+              <option>中1/2</option>
+              <option>中3</option>
+            </select>
+            <button title="ダークモード切替" id="toggleDarkMode" class="fs-4 btn p-0 ms-1">🌓</button>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main id="container" class="container">
+      <noscript>
+        <div class="alert alert-info text-center">JavaScript を ON にしてください</div>
+      </noscript>
+      <div id="noTTS" class="alert alert-warning text-center d-none">
+        お使いのブラウザは音声読み上げに対応していません。Chrome / Safari をご利用ください。
+      </div>
+      <div id="gameStart" class="text-center d-none">
+        <div id="countdown">
+          <div id="counter">3</div>
+          <object type="image/svg+xml" data="/kanjivg/09806.svg" width="128" height="128" alt=""></object>
+        </div>
+      </div>
+      <div id="scorePanel" class="text-center pb-3 d-none">
+        <h3 class="pt-3">
+          <ruby>結果<rp>(</rp><rt>けっか</rt><rp>)</rp></ruby>
+        </h3>
+        <p>クリアしたのは・・・</p>
+        <div class="h2 pb-3">
+          <span id="score" class="h1">0</span> /
+          <span id="total" class="h1">0</span>
+          <ruby>問<rp>(</rp><rt>もん</rt><rp>)</rp></ruby>！
+        </div>
+        <a id="twitter" target="_blank" href="https://twitter.com/intent/tweet?text=タッチde書き順で遊んだよ!&url=https%3a%2f%2fmarmooo.github.com/touch-de-kakijun/%2f&hashtags=タッチde書き順" class="btn btn-primary btn-lg m-1" role="button">Twitter でつぶやく</a>
+        <button id="restartButton" type="button" class="btn btn-primary btn-lg m-1">リスタート</button>
+        <div id="badges" class="pt-4"></div>
+      </div>
+      <div id="playPanel">
+        <div class="row">
+          <div class="col-sm">
+            <p><ruby>書<rt>か</rt></ruby>き<ruby>順<rt>じゅん</rt></ruby>どおりにタッチしください。
+            3<ruby>分<rt>ふん</rt></ruby>でどれくらい<ruby>解<rt>と</rt></ruby>けるかな？
+            </p>
+          </div>
+          <div class="col-sm">
+            <div class="alert alert-info text-center">
+              <div class="h5">
+                <label><ruby>時間<rp>(</rp><rt>じかん</rt><rp>)</rp></ruby>:</label>
+                <span id="time" class="ms-1">180秒 / 180秒</span>
+              </div>
+              <div>
+                <button id="startButton" class="btn btn-primary btn-lg">スタート</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="text-center pt-3">
+          <div class="h2">読み方: <span id="yomis">カン</span></div>
+          <object id="svg" type="image/svg+xml" data="/kanjivg/06f22.svg" width="280" height="280" alt="問題"></object>
+        </div>
+      </div>
+    </main>
+    <footer class="pt-4 alert text-center">
+      <div>SVG - <a href="https://github.com/KanjiVG/kanjivg">KanjiVG/kanjivg</a>
+        / <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a> by Ulrich Apel
+      </div>
+      <div class="pt-3">
+        <a class="px-1" href="/">Home</a>
+        <a class="px-1" href="/terms/">Terms</a>
+        <a class="px-1" href="https://github.com/marmooo/touch-de-kakijun">Contact</a>
+      </div>
+      <div class="text-muted">&copy; <a href="https://github.com/marmooo">marmooo</a></div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.2/dist/signature_pad.umd.min.js" integrity="sha256-r5+PB5YNxrCsBxRQfgksYr+JjCLB6XyvT/4BqGITlGU=" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
+  </body>
+</html>
