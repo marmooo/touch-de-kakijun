@@ -1,4 +1,4 @@
-var CACHE_NAME = '2022-03-14 20:35';
+var CACHE_NAME = '2022-03-15 20:20';
 var urlsToCache = [
   "/touch-de-kakijun/",
   "/touch-de-kakijun/index.js",
