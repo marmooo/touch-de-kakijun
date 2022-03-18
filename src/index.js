@@ -227,12 +227,15 @@ function addSVGEvents(object, kanjiId) {
         playAudio(correctAllAudio);
         kaku.setAttribute("stroke", "blue");
         const solved = problems.shift();
+        badge.classList.remove("btn-outline-secondary");
         if (!mistaked) {
-          badge.classList.add("btn-secondary");
-          badge.classList.remove("btn-outline-secondary");
+          badge.classList.add("btn-success");
+          badge.classList.remove("btn-warning");
           correctCount += 1;
           if (problems.length == 0) initProblems();
         } else {
+          badge.classList.add("btn-warning");
+          badge.classList.remove("btn-success");
           problems.push(solved);
         }
         mistaked = false;
