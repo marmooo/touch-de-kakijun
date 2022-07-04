@@ -52,7 +52,7 @@
         <div class="container flex-wrap">
           <a class="navbar-brand" href="/touch-de-kakijun/">
             <img src="/touch-de-kakijun/favicon/favicon.svg" width="32" height="32">
-            タッチde<ruby>書<rp>(</rp><rt>か</rt><rp>)</rp></ruby>き<ruby>順<rp>(</rp><rt>じゅん</rt><rp>)</rp></ruby>
+            タッチde書き順
           </a>
           <div class="navbar-nav">
             <select title="学年" id="gradeOption" class="form-select form-select-sm">
@@ -84,18 +84,15 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
       <div id="gameStart" class="text-center d-none">
         <div id="countdown">
           <div id="counter">3</div>
-          <object type="image/svg+xml" data="/kanjivg/09806.svg" width="128" height="128" alt=""></object>
+          <object type="image/svg+xml" data="/kanjivg/09806.svg" width="128" height="128"></object>
         </div>
       </div>
       <div id="scorePanel" class="text-center pb-3 d-none">
-        <h3 class="pt-3">
-          <ruby>結果<rp>(</rp><rt>けっか</rt><rp>)</rp></ruby>
-        </h3>
+        <h3 class="pt-3">スコア</h3>
         <p>クリアしたのは・・・</p>
-        <div class="h2 pb-3">
+        <div class="h2 pb-3 notranslate">
           <span id="score" class="h1">0</span> /
           <span id="total" class="h1">0</span>
-          <ruby>問<rp>(</rp><rt>もん</rt><rp>)</rp></ruby>！
         </div>
         <a id="twitter" target="_blank" href="https://twitter.com/intent/tweet?text=タッチde書き順で遊んだよ!&url=https%3a%2f%2fmarmooo.github.com/touch-de-kakijun/%2f&hashtags=タッチde書き順" class="btn btn-primary btn-lg m-1" role="button">Twitter でつぶやく</a>
         <button id="restartButton" type="button" class="btn btn-primary btn-lg m-1">リスタート</button>
@@ -103,26 +100,28 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
       </div>
       <div id="playPanel">
         <div class="row">
-          <div class="col-sm">
-            <p><ruby>書<rt>か</rt></ruby>き<ruby>順<rt>じゅん</rt></ruby>どおりにタッチしください。
-            3<ruby>分<rt>ふん</rt></ruby>でどれくらい<ruby>解<rt>と</rt></ruby>けるかな？
+          <div class="col-md">
+            <p>書き順どおりにタッチしてください。
+            3分でどれくらい解けるかな？
             </p>
           </div>
-          <div class="col-sm">
-            <div class="alert alert-info text-center">
-              <div class="h5">
-                <label><ruby>時間<rp>(</rp><rt>じかん</rt><rp>)</rp></ruby>:</label>
-                <span id="time" class="ms-1">180秒 / 180秒</span>
+          <div class="col-md text-center">
+            <div class="alert alert-info">
+              <div class="d-flex flex-wrap justify-content-center">
+                <div class="h5 text-nowrap notranslate">
+                  <span id="time">180</span>
+                  <span> / 180 sec</span>
+                </div>
               </div>
-              <div>
+              <div class="mt-2">
                 <button id="startButton" class="btn btn-primary btn-lg">スタート</button>
               </div>
             </div>
           </div>
         </div>
         <div class="text-center pt-3">
-          <div class="h2">読み方: <span id="yomis">カン</span></div>
-          <object id="svg" type="image/svg+xml" data="/kanjivg/06f22.svg" width="280" height="280" alt="問題"></object>
+          <div class="h2">読み方: <span id="yomis" class="notranslate">カン</span></div>
+          <object id="svg" type="image/svg+xml" data="/kanjivg/06f22.svg" width="280" height="280"></object>
         </div>
       </div>
     </main>
