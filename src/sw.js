@@ -6,7 +6,7 @@ var urlsToCache = [
   "/touch-de-kakijun/mp3/correct3.mp3",
   "/touch-de-kakijun/mp3/incorrect1.mp3",
   "/touch-de-kakijun/mp3/end.mp3",
-  "/touch-de-kakijun/favicon/original.svg",
+  "/touch-de-kakijun/favicon/favicon.svg",
   "/kanjivg/09806.svg",
   "/kanjivg/06f22.svg",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
