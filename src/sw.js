@@ -1,4 +1,4 @@
-var CACHE_NAME = "2022-09-11 08:49";
+var CACHE_NAME = "2022-10-08 11:03";
 var urlsToCache = [
   "/touch-de-kakijun/",
   "/touch-de-kakijun/index.js",
@@ -9,7 +9,7 @@ var urlsToCache = [
   "/touch-de-kakijun/favicon/favicon.svg",
   "/kanjivg/09806.svg",
   "/kanjivg/06f22.svg",
-  "https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css",
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css",
 ];
 
 self.addEventListener("install", function (event) {
