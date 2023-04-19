@@ -158,17 +158,17 @@ function toKanjiId(str) {
   return ("00000" + hex).slice(-5);
 }
 
-function loadSVG(kanji, kanjiId, object) {
+function loadSVG(kanjiId, object) {
   object.setAttribute("data", kanjivgDir + "/" + kanjiId + ".svg");
   object.setAttribute("data-id", kanjiId);
-  object.setAttribute("onload", "_initSVG(this)");
+  object.onload = initSVG;
   return object;
 }
 
 function loadProblem(kanji) {
   const svg = document.getElementById("svg");
   const kanjiId = toKanjiId(kanji);
-  loadSVG(kanji, kanjiId, svg);
+  loadSVG(kanjiId, svg);
 }
 
 function setStrokeWidth(object, kanjiId, width) {
@@ -248,7 +248,8 @@ function addSVGEvents(object, kanjiId) {
   });
 }
 
-function _initSVG(object) {
+function initSVG(event) {
+  const object = event.target;
   const kanjiId = object.dataset.id;
   const yomiStr = yomis[kanjiId];
   speak(yomiStr.replace("-", ""));
