@@ -42,8 +42,8 @@ const dirNames = [
   "常用",
   "常用外",
 ];
-let gameTime = 180;
-let yomis = {};
+const gameTime = 180;
+const yomis = {};
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
@@ -59,19 +59,6 @@ loadConfig();
 // function toKanji(kanjiId) {
 //   return String.fromCodePoint(parseInt("0x" + kanjiId));
 // }
-
-function getGrade(str) {
-  for (let grade = 1; grade < gradeByKanjis.length; grade++) {
-    if (gradeByKanjis[grade].includes(str)) {
-      return grade;
-    }
-  }
-  if (/[\u4E00-\u9FFF]/.test(str)) {
-    return 10;
-  } else {
-    return -1;
-  }
-}
 
 function loadConfig() {
   if (localStorage.getItem("darkMode") == 1) {
