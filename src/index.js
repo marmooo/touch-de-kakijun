@@ -207,29 +207,31 @@ function addSVGEvents(object, kanjiId) {
   const badge = document.getElementById(kanjiId);
   kakus.forEach((kaku, i) => {
     kaku.onclick = () => {
-      if (counter == kakus.length - 1) {
-        playAudio("correctAll");
-        kaku.setAttribute("stroke", "blue");
-        const solved = problems.shift();
-        badge.classList.remove("btn-outline-secondary");
-        if (!mistaked) {
-          badge.classList.add("btn-success");
-          badge.classList.remove("btn-warning");
-          correctCount += 1;
-          if (problems.length == 0) initProblems();
+      if (counter == i) {
+        if (counter == kakus.length - 1) {
+          playAudio("correctAll");
+          kaku.setAttribute("stroke", "blue");
+          const solved = problems.shift();
+          badge.classList.remove("btn-outline-secondary");
+          if (!mistaked) {
+            badge.classList.add("btn-success");
+            badge.classList.remove("btn-warning");
+            correctCount += 1;
+            if (problems.length == 0) initProblems();
+          } else {
+            badge.classList.add("btn-warning");
+            badge.classList.remove("btn-success");
+            problems.push(solved);
+          }
+          mistaked = false;
+          counter = 0;
+          nextProblem();
         } else {
-          badge.classList.add("btn-warning");
-          badge.classList.remove("btn-success");
-          problems.push(solved);
+          playAudio("correct");
+          kaku.setAttribute("stroke", "blue");
+          counter += 1;
         }
-        mistaked = false;
-        counter = 0;
-        nextProblem();
-      } else if (counter == i) {
-        playAudio("correct");
-        kaku.setAttribute("stroke", "blue");
-        counter += 1;
-      } else {
+      } else if (counter < i) {
         playAudio("incorrect");
         object.style.pointerEvents = "none";
         kakus[counter].setAttribute("stroke", "red");
