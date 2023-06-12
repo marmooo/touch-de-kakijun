@@ -80,24 +80,7 @@
         <pre><code>sudo apt install speech-dispatcher
 sudo apt install festival speech-dispatcher-festival</code></pre>
       </div>
-      <div id="gameStart" class="text-center d-none">
-        <div id="countdown">
-          <div id="counter">3</div>
-          <object type="image/svg+xml" data="/kanjivg/09806.svg" width="128" height="128"></object>
-        </div>
-      </div>
-      <div id="scorePanel" class="text-center pb-3 d-none">
-        <h3 class="pt-3">スコア</h3>
-        <p>クリアしたのは・・・</p>
-        <div class="h2 pb-3 notranslate">
-          <span id="score" class="h1">0</span> /
-          <span id="total" class="h1">0</span>
-        </div>
-        <a id="twitter" target="_blank" href="https://twitter.com/intent/tweet?text=タッチde書き順で遊んだよ!&url=https://marmooo.github.com/touch-de-kakijun/&hashtags=タッチde書き順" class="btn btn-primary btn-lg m-1" role="button">Twitter でつぶやく</a>
-        <button id="restartButton" class="btn btn-primary btn-lg m-1" type="button">リスタート</button>
-        <div id="badges" class="pt-4"></div>
-      </div>
-      <div id="playPanel">
+      <div id="infoPanel">
         <div class="row">
           <div class="col-md">
             <p>書き順どおりにタッチしてください。
@@ -118,10 +101,27 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
             </div>
           </div>
         </div>
+      </div>
+      <div id="playPanel">
         <div class="text-center pt-3">
           <div class="h2">読み方: <span id="yomis" class="notranslate">カン</span></div>
           <object id="svg" type="image/svg+xml" data="/kanjivg/06f22.svg" width="280" height="280"></object>
         </div>
+      </div>
+      <div id="countPanel" class="text-center d-none notranslate">
+        <div id="counter"></div>
+        <object type="image/svg+xml" data="/kanjivg/09806.svg" width="128" height="128"></object>
+      </div>
+      <div id="scorePanel" class="text-center pb-3 d-none">
+        <h3 class="pt-3">スコア</h3>
+        <p>クリアしたのは・・・</p>
+        <div class="h2 pb-3 notranslate">
+          <span id="score" class="h1">0</span> /
+          <span id="total" class="h1">0</span>
+        </div>
+        <a id="twitter" target="_blank" href="https://twitter.com/intent/tweet?text=タッチde書き順で遊んだよ!&url=https://marmooo.github.com/touch-de-kakijun/&hashtags=タッチde書き順" class="btn btn-primary btn-lg m-1" role="button">Twitter でつぶやく</a>
+        <button id="restartButton" class="btn btn-primary btn-lg m-1" type="button">リスタート</button>
+        <div id="badges" class="pt-4"></div>
       </div>
     </main>
     <footer class="pt-4 alert text-center">
@@ -135,6 +135,9 @@ sudo apt install festival speech-dispatcher-festival</code></pre>
       </div>
       <div class="text-muted">&copy; <a href="https://github.com/marmooo">marmooo</a></div>
     </footer>
+    <div class="drop-inline-css d-none
+      me-1 mb-1 btn btn-sm
+      btn-outline-secondary btn-success btn-warning"></div>
     <script src="index.js"></script>
   </body>
 </html>

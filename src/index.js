@@ -42,8 +42,13 @@ const dirNames = [
   "常用",
   "常用外",
 ];
+const playPanel = document.getElementById("playPanel");
+const infoPanel = document.getElementById("infoPanel");
+const countPanel = document.getElementById("countPanel");
+const scorePanel = document.getElementById("scorePanel");
 const gameTime = 180;
 const yomis = {};
+let gameTimer;
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
@@ -254,9 +259,39 @@ function nextProblem() {
   loadProblem(kanji);
 }
 
-let gameTimer;
-function startGameTimer() {
+function countdown() {
+  correctCount = totalCount = 0;
+  countPanel.classList.remove("d-none");
+  infoPanel.classList.add("d-none");
+  playPanel.classList.add("d-none");
+  scorePanel.classList.add("d-none");
+  const counter = document.getElementById("counter");
+  counter.textContent = 3;
+  const timer = setInterval(() => {
+    const colors = ["skyblue", "greenyellow", "violet", "tomato"];
+    if (parseInt(counter.textContent) > 1) {
+      const t = parseInt(counter.textContent) - 1;
+      counter.style.backgroundColor = colors[t];
+      counter.textContent = t;
+    } else {
+      clearTimeout(timer);
+      countPanel.classList.add("d-none");
+      infoPanel.classList.remove("d-none");
+      playPanel.classList.remove("d-none");
+      problems = shuffle(problems);
+      nextProblem();
+      startGameTimer();
+    }
+  }, 1000);
+}
+
+function startGame() {
   clearInterval(gameTimer);
+  initTime();
+  countdown();
+}
+
+function startGameTimer() {
   const timeNode = document.getElementById("time");
   initTime();
   gameTimer = setInterval(() => {
@@ -266,6 +301,8 @@ function startGameTimer() {
     } else {
       clearInterval(gameTimer);
       playAudio("end");
+      playPanel.classList.add("d-none");
+      scorePanel.classList.remove("d-none");
       scoring();
     }
   }, 1000);
@@ -273,6 +310,11 @@ function startGameTimer() {
 
 function initTime() {
   document.getElementById("time").textContent = gameTime;
+}
+
+function scoring() {
+  document.getElementById("score").textContent = correctCount;
+  document.getElementById("total").textContent = totalCount;
 }
 
 function initProblems() {
@@ -285,40 +327,6 @@ function changeProblems() {
   initProblems();
 }
 
-let countdownTimer;
-function countdown() {
-  clearTimeout(countdownTimer);
-  gameStart.classList.remove("d-none");
-  playPanel.classList.add("d-none");
-  scorePanel.classList.add("d-none");
-  const counter = document.getElementById("counter");
-  counter.textContent = 3;
-  countdownTimer = setInterval(() => {
-    const colors = ["skyblue", "greenyellow", "violet", "tomato"];
-    if (parseInt(counter.textContent) > 1) {
-      const t = parseInt(counter.textContent) - 1;
-      counter.style.backgroundColor = colors[t];
-      counter.textContent = t;
-    } else {
-      clearTimeout(countdownTimer);
-      gameStart.classList.add("d-none");
-      playPanel.classList.remove("d-none");
-      document.getElementById("score").textContent = 0;
-      correctCount = totalCount = 0;
-      problems = shuffle(problems);
-      nextProblem();
-      startGameTimer();
-    }
-  }, 1000);
-}
-
-function scoring() {
-  playPanel.classList.add("d-none");
-  scorePanel.classList.remove("d-none");
-  document.getElementById("score").textContent = correctCount;
-  document.getElementById("total").textContent = totalCount;
-}
-
 function shuffle(array) {
   for (let i = array.length; 1 < i; i--) {
     const k = Math.floor(Math.random() * i);
@@ -329,7 +337,7 @@ function shuffle(array) {
 
 function setBadgeTemplate() {
   const a = document.createElement("a");
-  a.className = "me-1 mb-1 btn btn-outline-secondary btn-sm";
+  a.className = "me-1 mb-1 btn btn-sm btn-outline-secondary";
   a.target = "_blank";
   return a;
 }
