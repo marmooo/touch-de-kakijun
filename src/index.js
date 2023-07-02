@@ -67,17 +67,42 @@ loadConfig();
 
 function loadConfig() {
   if (localStorage.getItem("darkMode") == 1) {
-    document.documentElement.dataset.theme = "dark";
+    document.documentElement.setAttribute("data-bs-theme", "dark");
+    [...document.getElementsByTagName("object")].forEach((object) => {
+      if (isLoaded(object)) {
+        const svg = object.contentDocument.rootElement;
+        svg.style.background = "#212529";
+        svg.firstElementChild.style.stroke = "#fff";
+      } else {
+        object.onload = () => {
+          const svg = object.contentDocument.rootElement;
+          svg.style.background = "#212529";
+          svg.firstElementChild.style.stroke = "#fff";
+        };
+      }
+    });
   }
 }
 
+// TODO: :host-context() is not supportted by Safari/Firefox now
+// TODO: contentDocument() need visually-hidden (d-none does not work)
 function toggleDarkMode() {
   if (localStorage.getItem("darkMode") == 1) {
     localStorage.setItem("darkMode", 0);
-    delete document.documentElement.dataset.theme;
+    document.documentElement.setAttribute("data-bs-theme", "light");
+    [...document.getElementsByTagName("object")].forEach((object) => {
+      const svg = object.contentDocument.rootElement;
+      svg.style.background = "#fff";
+      svg.firstElementChild.style.stroke = "#000";
+    });
   } else {
     localStorage.setItem("darkMode", 1);
-    document.documentElement.dataset.theme = "dark";
+    document.documentElement.setAttribute("data-bs-theme", "dark");
+    [...document.getElementsByTagName("object")].forEach((object) => {
+      const svg = object.contentDocument.rootElement;
+      svg.style.background = "#212529";
+      svg.firstElementChild.style.stroke = "#fff";
+    });
   }
 }
 
@@ -153,6 +178,7 @@ function toKanjiId(str) {
 function loadSVG(kanjiId, object) {
   object.setAttribute("data", kanjivgDir + "/" + kanjiId + ".svg");
   object.setAttribute("data-id", kanjiId);
+  object.style.visibility = "hidden";
   object.onload = initSVG;
   return object;
 }
@@ -202,7 +228,7 @@ function addSVGEvents(object, kanjiId) {
       if (counter == i) {
         if (counter == kakus.length - 1) {
           playAudio("correctAll");
-          kaku.setAttribute("stroke", "blue");
+          kaku.setAttribute("stroke", "#0d6efd"); // bs-primary
           const solved = problems.shift();
           badge.classList.remove("btn-outline-secondary");
           if (!mistaked) {
@@ -220,19 +246,19 @@ function addSVGEvents(object, kanjiId) {
           nextProblem();
         } else {
           playAudio("correct");
-          kaku.setAttribute("stroke", "blue");
+          kaku.setAttribute("stroke", "#0d6efd"); // bs-primary
           counter += 1;
         }
       } else if (counter < i) {
         playAudio("incorrect");
         object.style.pointerEvents = "none";
-        kakus[counter].setAttribute("stroke", "red");
+        kakus[counter].setAttribute("stroke", "#dc3545"); // bs-danger
         badge.classList.remove("btn-secondary");
         badge.classList.add("btn-outline-secondary");
         mistaked = true;
         setTimeout(() => {
           kakus.forEach((k) => {
-            k.setAttribute("stroke", "black");
+            k.removeAttribute("stroke");
           });
           object.style.pointerEvents = "auto";
         }, 1000);
@@ -244,6 +270,16 @@ function addSVGEvents(object, kanjiId) {
 
 function initSVG(event) {
   const object = event.target;
+  const theme = document.documentElement.getAttribute("data-bs-theme");
+  if (theme == "dark") {
+    const svg = object.contentDocument.rootElement;
+    svg.style.background = "#212529";
+    svg.firstElementChild.style.stroke = "#fff";
+    [...svg.querySelectorAll("[fill]")].forEach((node) => {
+      node.removeAttribute("fill");
+    });
+  }
+  object.style.visibility = "initial";
   const kanjiId = object.dataset.id;
   const yomiStr = yomis[kanjiId];
   speak(yomiStr.replace("-", ""));
@@ -261,7 +297,7 @@ function nextProblem() {
 
 function countdown() {
   correctCount = totalCount = 0;
-  countPanel.classList.remove("d-none");
+  countPanel.classList.remove("visually-hidden");
   infoPanel.classList.add("d-none");
   playPanel.classList.add("d-none");
   scorePanel.classList.add("d-none");
@@ -275,7 +311,7 @@ function countdown() {
       counter.textContent = t;
     } else {
       clearTimeout(timer);
-      countPanel.classList.add("d-none");
+      countPanel.classList.add("visually-hidden");
       infoPanel.classList.remove("d-none");
       playPanel.classList.remove("d-none");
       problems = shuffle(problems);
@@ -371,12 +407,21 @@ function loadYomis() {
     });
 }
 
+function isLoaded(object) {
+  const doc = object.contentDocument;
+  if (!doc) return false;
+  const svg = doc.rootElement;
+  if (!svg) return false;
+  if (svg.getCurrentTime() <= 0) return false;
+  return true;
+}
+
 loadYomis();
 initProblems();
 setBadges();
 document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
-document.getElementById("restartButton").onclick = countdown;
-document.getElementById("startButton").onclick = countdown;
+document.getElementById("restartButton").onclick = startGame;
+document.getElementById("startButton").onclick = startGame;
 document.getElementById("gradeOption").onchange = changeProblems;
 document.addEventListener("click", unlockAudio, {
   once: true,
