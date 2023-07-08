@@ -70,12 +70,12 @@ function loadConfig() {
     document.documentElement.setAttribute("data-bs-theme", "dark");
     [...document.getElementsByTagName("object")].forEach((object) => {
       if (isLoaded(object)) {
-        const svg = object.contentDocument.rootElement;
+        const svg = object.contentDocument.documentElement;
         svg.style.background = "#212529";
         svg.firstElementChild.style.stroke = "#fff";
       } else {
         object.onload = () => {
-          const svg = object.contentDocument.rootElement;
+          const svg = object.contentDocument.documentElement;
           svg.style.background = "#212529";
           svg.firstElementChild.style.stroke = "#fff";
         };
@@ -91,7 +91,7 @@ function toggleDarkMode() {
     localStorage.setItem("darkMode", 0);
     document.documentElement.setAttribute("data-bs-theme", "light");
     [...document.getElementsByTagName("object")].forEach((object) => {
-      const svg = object.contentDocument.rootElement;
+      const svg = object.contentDocument.documentElement;
       svg.style.background = "#fff";
       svg.firstElementChild.style.stroke = "#000";
     });
@@ -99,7 +99,7 @@ function toggleDarkMode() {
     localStorage.setItem("darkMode", 1);
     document.documentElement.setAttribute("data-bs-theme", "dark");
     [...document.getElementsByTagName("object")].forEach((object) => {
-      const svg = object.contentDocument.rootElement;
+      const svg = object.contentDocument.documentElement;
       svg.style.background = "#212529";
       svg.firstElementChild.style.stroke = "#fff";
     });
@@ -272,7 +272,7 @@ function initSVG(event) {
   const object = event.target;
   const theme = document.documentElement.getAttribute("data-bs-theme");
   if (theme == "dark") {
-    const svg = object.contentDocument.rootElement;
+    const svg = object.contentDocument.documentElement;
     svg.style.background = "#212529";
     svg.firstElementChild.style.stroke = "#fff";
     [...svg.querySelectorAll("[fill]")].forEach((node) => {
@@ -410,7 +410,7 @@ function loadYomis() {
 function isLoaded(object) {
   const doc = object.contentDocument;
   if (!doc) return false;
-  const svg = doc.rootElement;
+  const svg = doc.documentElement;
   if (!svg) return false;
   if (svg.getCurrentTime() <= 0) return false;
   return true;
