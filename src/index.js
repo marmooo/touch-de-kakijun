@@ -218,12 +218,12 @@ function addSVGEvents(object, kanjiId) {
           counter = 0;
           nextProblem();
         } else {
-          playAudio("correct");
+          playAudio("correct", 0.3);
           kaku.setAttribute("stroke", "#0d6efd"); // bs-primary
           counter += 1;
         }
       } else if (counter < i) {
-        playAudio("incorrect");
+        playAudio("incorrect", 0.3);
         object.style.pointerEvents = "none";
         kakus[counter].setAttribute("stroke", "#dc3545"); // bs-danger
         badge.classList.remove("btn-secondary");
