@@ -1,5 +1,5 @@
 import { Onkun } from "https://raw.githubusercontent.com/marmooo/onkun/v0.2.6/mod.js";
-import { JKAT } from "npm:@marmooo/kanji@0.0.2";
+import { JKAT } from "npm:@marmooo/kanji@0.0.8";
 
 function getYomis(kanji, grade) {
   const onkun = onkunDict.get(kanji);
