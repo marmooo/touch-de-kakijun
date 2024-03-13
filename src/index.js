@@ -25,7 +25,7 @@ let gameTimer;
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
-const audioContext = new AudioContext();
+const audioContext = new globalThis.AudioContext();
 const audioBufferCache = {};
 loadAudio("end", "mp3/end.mp3");
 loadAudio("correct", "mp3/correct3.mp3");
@@ -136,7 +136,7 @@ loadVoices();
 
 function speak(text) {
   speechSynthesis.cancel();
-  const msg = new SpeechSynthesisUtterance(text);
+  const msg = new globalThis.SpeechSynthesisUtterance(text);
   msg.voice = japaneseVoices[Math.floor(Math.random() * japaneseVoices.length)];
   msg.lang = "ja-JP";
   speechSynthesis.speak(msg);
