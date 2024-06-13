@@ -25,14 +25,11 @@ let gameTimer;
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
-const audioContext = new globalThis.AudioContext();
+let audioContext;
 const audioBufferCache = {};
-loadAudio("end", "mp3/end.mp3");
-loadAudio("correct", "mp3/correct3.mp3");
-loadAudio("correctAll", "mp3/correct1.mp3");
-loadAudio("incorrect", "mp3/incorrect1.mp3");
 let japaneseVoices = [];
 loadConfig();
+loadVoices();
 
 // function toKanji(kanjiId) {
 //   return String.fromCodePoint(parseInt("0x" + kanjiId));
@@ -79,33 +76,58 @@ function toggleDarkMode() {
   }
 }
 
-async function playAudio(name, volume) {
-  const audioBuffer = await loadAudio(name, audioBufferCache[name]);
-  const sourceNode = audioContext.createBufferSource();
-  sourceNode.buffer = audioBuffer;
-  if (volume) {
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = volume;
-    gainNode.connect(audioContext.destination);
-    sourceNode.connect(gainNode);
-    sourceNode.start();
+function createAudioContext() {
+  if (globalThis.AudioContext) {
+    return new globalThis.AudioContext();
   } else {
-    sourceNode.connect(audioContext.destination);
-    sourceNode.start();
+    console.error("Web Audio API is not supported in this browser");
+    return null;
   }
 }
 
-async function loadAudio(name, url) {
-  if (audioBufferCache[name]) return audioBufferCache[name];
-  const response = await fetch(url);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  audioBufferCache[name] = audioBuffer;
-  return audioBuffer;
+function unlockAudio() {
+  if (audioContext) {
+    audioContext.resume();
+  } else {
+    audioContext = createAudioContext();
+    loadAudio("end", "mp3/end.mp3");
+    loadAudio("correct", "mp3/correct3.mp3");
+    loadAudio("correctAll", "mp3/correct1.mp3");
+    loadAudio("incorrect", "mp3/incorrect1.mp3");
+  }
+  document.removeEventListener("pointerdown", unlockAudio);
+  document.removeEventListener("keydown", unlockAudio);
 }
 
-function unlockAudio() {
-  audioContext.resume();
+async function loadAudio(name, url) {
+  if (!audioContext) return;
+  if (audioBufferCache[name]) return audioBufferCache[name];
+  try {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    audioBufferCache[name] = audioBuffer;
+    return audioBuffer;
+  } catch (error) {
+    console.error(`Loading audio ${name} error:`, error);
+    throw error;
+  }
+}
+
+function playAudio(name, volume) {
+  if (!audioContext) return;
+  const audioBuffer = audioBufferCache[name];
+  if (!audioBuffer) {
+    console.error(`Audio ${name} is not found in cache`);
+    return;
+  }
+  const sourceNode = audioContext.createBufferSource();
+  sourceNode.buffer = audioBuffer;
+  const gainNode = audioContext.createGain();
+  if (volume) gainNode.gain.value = volume;
+  gainNode.connect(audioContext.destination);
+  sourceNode.connect(gainNode);
+  sourceNode.start();
 }
 
 function loadVoices() {
@@ -132,7 +154,6 @@ function loadVoices() {
     japaneseVoices = voices.filter((voice) => voice.lang == "ja-JP");
   });
 }
-loadVoices();
 
 function speak(text) {
   speechSynthesis.cancel();
@@ -396,7 +417,5 @@ document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
 document.getElementById("restartButton").onclick = startGame;
 document.getElementById("startButton").onclick = startGame;
 document.getElementById("gradeOption").onchange = changeProblems;
-document.addEventListener("click", unlockAudio, {
-  once: true,
-  useCapture: true,
-});
+document.addEventListener("pointerdown", unlockAudio, { once: true });
+document.addEventListener("keydown", unlockAudio, { once: true });
