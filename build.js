@@ -1,4 +1,4 @@
-import { Onkun } from "https://raw.githubusercontent.com/marmooo/onkun/v0.2.6/mod.js";
+import { Onkun } from "npm:onkun@0.2.8";
 import { JKAT } from "npm:@marmooo/kanji@0.0.8";
 
 function getYomis(kanji, grade) {
@@ -26,7 +26,7 @@ function getYomis(kanji, grade) {
 
 const onkunDict = new Onkun();
 await onkunDict.fetchJoyo(
-  "https://raw.githubusercontent.com/marmooo/onkun/v0.2.6/data/joyo-2017.csv",
+  "https://raw.githubusercontent.com/marmooo/onkun/v0.2.8/data/joyo-2017.csv",
 );
 
 const result = [];
