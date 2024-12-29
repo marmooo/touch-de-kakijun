@@ -25,9 +25,7 @@ function getYomis(kanji, grade) {
 }
 
 const onkunDict = new Onkun();
-await onkunDict.fetchJoyo(
-  "https://raw.githubusercontent.com/marmooo/onkun/v0.2.8/data/joyo-2017.csv",
-);
+await onkunDict.loadJoyo("onkun/data/joyo-2017.csv");
 
 const result = [];
 for (let g = 0; g < 10; g++) {
