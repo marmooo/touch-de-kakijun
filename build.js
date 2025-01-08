@@ -1,4 +1,4 @@
-import { Onkun } from "npm:onkun@0.2.8";
+import { Onkun } from "npm:onkun@0.3.0";
 import { JKAT } from "npm:@marmooo/kanji@0.0.8";
 
 function getYomis(kanji, grade) {
