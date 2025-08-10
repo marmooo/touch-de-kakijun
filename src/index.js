@@ -86,10 +86,6 @@ function createAudioContext() {
 }
 
 function unlockAudio() {
-  const uttr = new SpeechSynthesisUtterance("");
-  uttr.lang = "ja-JP";
-  speechSynthesis.speak(uttr);
-
   if (audioContext) {
     audioContext.resume();
   } else {
@@ -294,6 +290,7 @@ function nextProblem() {
 }
 
 function countdown() {
+  speak("Ready"); // unlock
   correctCount = totalCount = 0;
   countPanel.classList.remove("visually-hidden");
   infoPanel.classList.add("d-none");
