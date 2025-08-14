@@ -391,15 +391,13 @@ function setBadges() {
   }
 }
 
-function loadYomis() {
-  fetch("yomi.tsv")
-    .then((response) => response.text())
-    .then((tsv) => {
-      tsv.trimEnd().split("\n").forEach((line) => {
-        const [kanji, yomiStr] = line.split("\t");
-        yomis[toKanjiId(kanji)] = yomiStr;
-      });
-    });
+async function loadYomis() {
+  const response = await fetch("yomi.tsv");
+  const tsv = await response.text();
+  tsv.trimEnd().split("\n").forEach((line) => {
+    const [kanji, yomiStr] = line.split("\t");
+    yomis[toKanjiId(kanji)] = yomiStr;
+  });
 }
 
 function isLoaded(object) {
@@ -411,7 +409,7 @@ function isLoaded(object) {
   return true;
 }
 
-loadYomis();
+await loadYomis();
 initProblems();
 setBadges();
 document.getElementById("toggleDarkMode").onclick = toggleDarkMode;
