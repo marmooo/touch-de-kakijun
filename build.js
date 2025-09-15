@@ -1,5 +1,5 @@
-import { Onkun } from "npm:onkun@0.3.0";
-import { JKAT } from "npm:@marmooo/kanji@0.1.1";
+import { Onkun } from "onkun";
+import { JKAT } from "@marmooo/kanji";
 
 function getYomis(kanji, grade) {
   const onkun = onkunDict.get(kanji);

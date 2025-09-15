@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@marmooo/kanji": "npm:@marmooo/kanji@^0.1.2",
+    "onkun": "npm:onkun@^0.3.0"
+  }
+}
