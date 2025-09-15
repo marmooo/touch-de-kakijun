@@ -1,4 +1,4 @@
-import { JKAT } from "https://cdn.jsdelivr.net/npm/@marmooo/kanji@0.1.1/esm/jkat.js";
+import { JKAT } from "https://cdn.jsdelivr.net/npm/@marmooo/kanji@0.1.2/esm/jkat.js";
 
 const dirNames = [
   "小1",
