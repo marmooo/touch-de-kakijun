@@ -1,4 +1,5 @@
 import { JKAT } from "https://cdn.jsdelivr.net/npm/@marmooo/kanji@0.1.2/esm/jkat.js";
+import { createWorker } from "https://cdn.jsdelivr.net/npm/emoji-particle@0.0.4/+esm";
 
 const dirNames = [
   "小1",
@@ -20,8 +21,11 @@ const countPanel = document.getElementById("countPanel");
 const scorePanel = document.getElementById("scorePanel");
 const gameTime = 180;
 const yomis = {};
+const emojiParticle = initEmojiParticle();
+const maxParticleCount = 10;
 let problems = [];
 let gameTimer;
+let consecutiveWins = 0;
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
@@ -164,6 +168,30 @@ function speak(text) {
   return msg;
 }
 
+function initEmojiParticle() {
+  const canvas = document.createElement("canvas");
+  Object.assign(canvas.style, {
+    position: "fixed",
+    pointerEvents: "none",
+    top: "0px",
+    left: "0px",
+  });
+  canvas.width = document.documentElement.clientWidth;
+  canvas.height = document.documentElement.clientHeight;
+  document.body.prepend(canvas);
+
+  const offscreen = canvas.transferControlToOffscreen();
+  const worker = createWorker();
+  worker.postMessage({ type: "init", canvas: offscreen }, [offscreen]);
+
+  globalThis.addEventListener("resize", () => {
+    const width = document.documentElement.clientWidth;
+    const height = document.documentElement.clientHeight;
+    worker.postMessage({ type: "resize", width, height });
+  });
+  return { canvas, offscreen, worker };
+}
+
 function toKanjiId(str) {
   const hex = str.codePointAt(0).toString(16);
   return ("00000" + hex).slice(-5);
@@ -229,8 +257,10 @@ function addSVGEvents(object, kanjiId) {
             badge.classList.add("btn-success");
             badge.classList.remove("btn-warning");
             correctCount += 1;
+            consecutiveWins += 1;
             if (problems.length == 0) initProblems();
           } else {
+            consecutiveWins = 0;
             badge.classList.add("btn-warning");
             badge.classList.remove("btn-success");
             problems.push(solved);
@@ -284,6 +314,16 @@ function initSVG(event) {
 }
 
 function nextProblem() {
+  for (let i = 0; i < Math.min(consecutiveWins, maxParticleCount); i++) {
+    emojiParticle.worker.postMessage({
+      type: "spawn",
+      options: {
+        particleType: "popcorn",
+        originX: Math.random() * emojiParticle.canvas.width,
+        originY: Math.random() * emojiParticle.canvas.height,
+      },
+    });
+  }
   totalCount += 1;
   const kanji = problems[0];
   loadProblem(kanji);
@@ -291,7 +331,6 @@ function nextProblem() {
 
 function countdown() {
   speak("Ready"); // unlock
-  correctCount = totalCount = 0;
   countPanel.classList.remove("visually-hidden");
   infoPanel.classList.add("d-none");
   playPanel.classList.add("d-none");
@@ -305,6 +344,8 @@ function countdown() {
       counter.style.backgroundColor = colors[t];
       counter.textContent = t;
     } else {
+      correctCount = totalCount = 0;
+      consecutiveWins = 0;
       clearInterval(timer);
       countPanel.classList.add("visually-hidden");
       infoPanel.classList.remove("d-none");
