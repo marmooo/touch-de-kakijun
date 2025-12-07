@@ -1,6 +1,5 @@
-const CACHE_NAME = "2025-11-22 00:00";
+const cacheName = "2025-12-08 00:00";
 const urlsToCache = [
-  "/touch-de-kakijun/",
   "/touch-de-kakijun/index.js",
   "/touch-de-kakijun/mp3/correct1.mp3",
   "/touch-de-kakijun/mp3/correct3.mp3",
@@ -11,29 +10,35 @@ const urlsToCache = [
   "/kanjivg/06f22.svg",
 ];
 
+async function preCache() {
+  const cache = await caches.open(cacheName);
+  await Promise.all(
+    urlsToCache.map((url) =>
+      cache.add(url).catch((err) => console.warn("Failed to cache", url, err))
+    ),
+  );
+  self.skipWaiting();
+}
+
+async function handleFetch(event) {
+  const cached = await caches.match(event.request);
+  return cached || fetch(event.request);
+}
+
+async function cleanOldCaches() {
+  const cacheNames = await caches.keys();
+  await Promise.all(
+    cacheNames.map((name) => name !== cacheName ? caches.delete(name) : null),
+  );
+  self.clients.claim();
+}
+
 self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    }),
-  );
+  event.waitUntil(preCache());
 });
-
 self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }),
-  );
+  event.respondWith(handleFetch(event));
 });
-
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.filter((cacheName) => cacheName !== CACHE_NAME)
-          .map((cacheName) => caches.delete(cacheName)),
-      );
-    }),
-  );
+  event.waitUntil(cleanOldCaches());
 });
