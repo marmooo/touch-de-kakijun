@@ -40,44 +40,51 @@ loadVoices();
 // }
 
 function loadConfig() {
-  if (localStorage.getItem("darkMode") == 1) {
-    document.documentElement.setAttribute("data-bs-theme", "dark");
-    [...document.getElementsByTagName("object")].forEach((object) => {
-      if (isLoaded(object)) {
-        const svg = object.contentDocument.documentElement;
-        svg.style.background = "#212529";
-        svg.firstElementChild.style.stroke = "#fff";
-      } else {
-        object.onload = () => {
-          const svg = object.contentDocument.documentElement;
-          svg.style.background = "#212529";
-          svg.firstElementChild.style.stroke = "#fff";
-        };
-      }
-    });
-  }
+  const isDark =
+    document.documentElement.getAttribute("data-bs-theme") === "dark";
+  applySvgTheme(isDark);
 }
 
-// TODO: :host-context() is not supportted by Safari/Firefox now
-// TODO: contentDocument() need visually-hidden (d-none does not work)
 function toggleDarkMode() {
-  if (localStorage.getItem("darkMode") == 1) {
-    localStorage.setItem("darkMode", 0);
-    document.documentElement.setAttribute("data-bs-theme", "light");
-    [...document.getElementsByTagName("object")].forEach((object) => {
-      const svg = object.contentDocument.documentElement;
-      svg.style.background = "#fff";
-      svg.firstElementChild.style.stroke = "#000";
-    });
-  } else {
-    localStorage.setItem("darkMode", 1);
-    document.documentElement.setAttribute("data-bs-theme", "dark");
-    [...document.getElementsByTagName("object")].forEach((object) => {
-      const svg = object.contentDocument.documentElement;
-      svg.style.background = "#212529";
-      svg.firstElementChild.style.stroke = "#fff";
-    });
-  }
+  const html = document.documentElement;
+  const newTheme = html.getAttribute("data-bs-theme") === "dark"
+    ? "light"
+    : "dark";
+  html.setAttribute("data-bs-theme", newTheme);
+  localStorage.setItem("darkMode", newTheme);
+  applySvgTheme(newTheme === "dark");
+}
+
+function applySvgTheme(isDark) {
+  document.querySelectorAll("object").forEach((object) => {
+    applyOrWait(object, isDark);
+  });
+}
+
+const themedObjects = new WeakSet();
+
+function applyOrWait(object, isDark) {
+  if (applyToObject(object, isDark)) return;
+  if (themedObjects.has(object)) return;
+  themedObjects.add(object);
+  object.addEventListener("load", () => {
+    const currentDark =
+      document.documentElement.getAttribute("data-bs-theme") === "dark";
+    applyToObject(object, currentDark);
+  }, { once: true });
+}
+
+function applyToObject(object, isDark) {
+  const doc = object.contentDocument;
+  if (!doc) return false;
+  const svg = doc.documentElement;
+  if (!svg) return false;
+  svg.style.background = isDark ? "#212529" : "#fff";
+  doc.querySelectorAll("path").forEach((path) => {
+    path.style.stroke = isDark ? "#fff" : "#000";
+  });
+  object.style.visibility = "visible";
+  return true;
 }
 
 function createAudioContext() {
