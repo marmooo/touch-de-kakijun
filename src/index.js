@@ -29,11 +29,12 @@ let consecutiveWins = 0;
 let totalCount = 0;
 let correctCount = 0;
 const kanjivgDir = "/kanjivg";
+const themedObjects = new WeakSet();
 let audioContext;
 const audioBufferCache = {};
 let japaneseVoices = [];
-loadConfig();
 loadVoices();
+loadConfig();
 
 // function toKanji(kanjiId) {
 //   return String.fromCodePoint(parseInt("0x" + kanjiId));
@@ -61,8 +62,6 @@ function applySvgTheme(isDark) {
   });
 }
 
-const themedObjects = new WeakSet();
-
 function applyOrWait(object, isDark) {
   if (applyToObject(object, isDark)) return;
   if (themedObjects.has(object)) return;
@@ -76,11 +75,12 @@ function applyOrWait(object, isDark) {
 
 function applyToObject(object, isDark) {
   const doc = object.contentDocument;
-  if (!doc) return false;
+  if (!doc || doc.documentURI === "about:blank") return false;
   const svg = doc.documentElement;
   if (!svg) return false;
   svg.style.background = isDark ? "#212529" : "#fff";
-  doc.querySelectorAll("path").forEach((path) => {
+  const paths = doc.querySelectorAll("path");
+  paths.forEach((path) => {
     path.style.stroke = isDark ? "#fff" : "#000";
   });
   object.style.visibility = "visible";
